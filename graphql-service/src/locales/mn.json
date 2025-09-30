@@ -1,0 +1,7 @@
+{
+	"error": {
+		"token": {
+			"not_found": "error.token.not_found"
+		}
+	}
+}

@@ -1,0 +1,61 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @unique
+  firstName String
+  lastName  String
+  password  String
+  email     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Холболт
+  memberships UserOrganization[]
+}
+
+model Organization {
+  id        String   @id @unique
+  name      String
+  register  String
+  email     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Холболт
+  members UserOrganization[]
+}
+
+model UserOrganization {
+  id String @id @default(uuid())
+
+  // Гадны түлхүүрүүд
+  userId         String
+  organizationId String
+
+  // Харьцаа
+  user         User         @relation(fields: [userId], references: [id])
+  organization Organization @relation(fields: [organizationId], references: [id])
+
+  // Role талбар
+  role String
+
+  // Цаг тэмдэглэл
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, organizationId]) // нэг хэрэглэгч нэг байгууллагад давхардахгүй
+}
